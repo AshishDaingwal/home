@@ -197,17 +197,30 @@
 
   <script>
     (function() {
+      var DOMAIN = '.daingwal.com';
       var root = document.documentElement;
       var buttons = document.querySelectorAll('.theme-toggle button');
       var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+      }
+
+      function setCookie(name, value) {
+        var expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString();
+        var isLocal = location.hostname === '' || location.hostname === 'localhost' || location.protocol === 'file:';
+        var cookie = name + '=' + value + ';path=/;expires=' + expires + ';SameSite=Lax';
+        if (!isLocal) cookie += ';domain=' + DOMAIN;
+        document.cookie = cookie;
+      }
+
+      function getSavedChoice() {
+        return getCookie('theme') || localStorage.getItem('theme') || 'system';
+      }
+
       function applyTheme(choice) {
-        var theme;
-        if (choice === 'system') {
-          theme = prefersDark.matches ? 'dark' : 'light';
-        } else {
-          theme = choice;
-        }
+        var theme = choice === 'system' ? (prefersDark.matches ? 'dark' : 'light') : choice;
         root.setAttribute('data-theme', theme);
         buttons.forEach(function(btn) {
           btn.classList.toggle('active', btn.getAttribute('data-theme-choice') === choice);
@@ -215,6 +228,7 @@
       }
 
       function setTheme(choice) {
+        setCookie('theme', choice);
         localStorage.setItem('theme', choice);
         applyTheme(choice);
       }
@@ -226,10 +240,10 @@
       });
 
       prefersDark.addEventListener('change', function() {
-        if (localStorage.getItem('theme') === 'system') applyTheme('system');
+        if (getSavedChoice() === 'system') applyTheme('system');
       });
 
-      applyTheme(localStorage.getItem('theme') || 'system');
+      applyTheme(getSavedChoice());
     })();
   </script>
 </body>
