@@ -1,38 +1,236 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Ashish Daingwal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daingwal</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f172a;
+      --surface: rgba(15, 23, 42, 0.85);
+      --border: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --hover: #1e293b;
+      --grid: rgba(148, 163, 184, 0.06);
+      --glow-1: rgba(56, 189, 248, 0.08);
+      --glow-2: rgba(139, 92, 246, 0.06);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: rgba(255, 255, 255, 0.85);
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --hover: #f1f5f9;
+      --grid: rgba(15, 23, 42, 0.03);
+      --glow-1: rgba(56, 189, 248, 0.06);
+      --glow-2: rgba(139, 92, 246, 0.04);
+    }
+
     body {
-      font-family: Arial;
-      text-align: center;
-      background: #0f172a;
-      color: white;
-      padding: 50px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 10%, var(--glow-1), transparent),
+        radial-gradient(ellipse 60% 80% at 80% 90%, var(--glow-2), transparent),
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      transition: background-color 0.3s, color 0.3s;
     }
-    h1 {
-      font-size: 48px;
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
     }
-    .links {
-      margin-top: 30px;
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 48px;
     }
-    a {
-      display: block;
-      margin: 10px;
-      color: #38bdf8;
-      font-size: 20px;
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+
+    .theme-toggle {
+      display: flex;
+      gap: 2px;
+      background: var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .theme-toggle button {
+      background: none;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .theme-toggle button.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .theme-toggle button:hover:not(.active) {
+      color: var(--text-muted);
+    }
+
+    .directory {
+      list-style: none;
+    }
+
+    .directory li {
+      border-top: 1px solid var(--border);
+    }
+
+    .directory li:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .directory a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 8px;
       text-decoration: none;
+      transition: background 0.15s;
+      border-radius: 8px;
+      margin: 0 -8px;
+    }
+
+    .directory a:hover {
+      background: var(--hover);
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .link-title {
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .link-desc {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    .link-url {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 32px 24px; }
+      .directory a { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .link-url { align-self: flex-start; }
     }
   </style>
 </head>
 <body>
-  <h1>Daingwal</h1>
-  <p>Personal domain hub</p>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Daingwal</h1>
+        <p>Directory</p>
+      </div>
+      <div class="theme-toggle" role="radiogroup" aria-label="Theme">
+        <button data-theme-choice="light" title="Light">&#9788;</button>
+        <button data-theme-choice="system" title="System">&#9684;</button>
+        <button data-theme-choice="dark" title="Dark">&#9790;</button>
+      </div>
+    </header>
 
-  <div class="links">
-    <a href="https://ashish.daingwal.com">Ashish Portfolio</a>
-    <!-- future -->
-    <!-- <a href="https://blog.daingwal.com">Blog</a> -->
+    <ul class="directory">
+      <!-- Add new links: copy a <li> block, update href, title, description, and url -->
+      <li>
+        <a href="https://ashish.daingwal.com">
+          <span class="link-info">
+            <span class="link-title">Ashish</span>
+            <span class="link-desc">Personal portfolio and projects</span>
+          </span>
+          <span class="link-url">ashish.daingwal.com</span>
+        </a>
+      </li>
+    </ul>
   </div>
+
+  <script>
+    (function() {
+      var root = document.documentElement;
+      var buttons = document.querySelectorAll('.theme-toggle button');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function applyTheme(choice) {
+        var theme;
+        if (choice === 'system') {
+          theme = prefersDark.matches ? 'dark' : 'light';
+        } else {
+          theme = choice;
+        }
+        root.setAttribute('data-theme', theme);
+        buttons.forEach(function(btn) {
+          btn.classList.toggle('active', btn.getAttribute('data-theme-choice') === choice);
+        });
+      }
+
+      function setTheme(choice) {
+        localStorage.setItem('theme', choice);
+        applyTheme(choice);
+      }
+
+      buttons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          setTheme(btn.getAttribute('data-theme-choice'));
+        });
+      });
+
+      prefersDark.addEventListener('change', function() {
+        if (localStorage.getItem('theme') === 'system') applyTheme('system');
+      });
+
+      applyTheme(localStorage.getItem('theme') || 'system');
+    })();
+  </script>
 </body>
 </html>
